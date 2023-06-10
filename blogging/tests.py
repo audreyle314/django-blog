@@ -1,4 +1,4 @@
-from django.teqst import TestCase
+from django.test import TestCase
 from django.contrib.auth.models import User
 from blogging.models import Post, Category
 import datetime
