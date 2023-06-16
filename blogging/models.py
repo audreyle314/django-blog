@@ -1,5 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.apps import AppConfig
+
+
+class MyAppConfig(AppConfig):
+    default_auto_field = 'django.db.models.AutoField'
+    name = 'my_app'
 
 
 class Post(models.Model):
