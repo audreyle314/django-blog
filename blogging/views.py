@@ -48,6 +48,6 @@ def homepage(request):
 
         return redirect("main:homepage")
     post_form = PostForm()
-    posts = Post.objects.all()
+    posts = Post.objects.all() # if I'm using the same model Post, do I need to migrate again?
     return render(request=request, template_name="blogging/add.html",
                   context={'post_form': post_form, 'posts': posts})
