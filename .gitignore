@@ -1,6 +1,0 @@
-*.pyc
-*.db
-db.sqlite3
-staticfiles
-.env
-venv
