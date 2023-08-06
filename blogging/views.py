@@ -1,8 +1,12 @@
-from blogging.models import Post
+from blogging.models import User, Post, Category
 from blogging.forms import PostForm
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from rest_framework import viewsets
+from rest_framework import permissions
+
+from blogging.serializers import PostSerializer, CategorySerializer
 
 
 class ListView():
@@ -33,9 +37,10 @@ class BlogDetailView(DetailView):
         return render(request, 'blogging/detail.html', context)
 
 
-# class AddModel(PostForm):
+# class AddModel(DetailView):
 #     model = Post
-#     template_name = 'blogging/add.html'
+#     template_name = 'blogging/detail.html'
+
 
 def homepage(request):
     if request.method == "POST":
@@ -46,8 +51,45 @@ def homepage(request):
         else:
             messages.error(request, 'Error saving form')
 
-        return redirect("main:homepage")
+        return redirect("blogging:homepage")
     post_form = PostForm()
-    posts = Post.objects.all() # if I'm using the same model Post, do I need to migrate again?
+    posts = Post.objects.all()
     return render(request=request, template_name="blogging/add.html",
                   context={'post_form': post_form, 'posts': posts})
+
+
+# class UserViewSet(viewsets.ModelViewSet):
+#     """
+#     API endpoint that allows users to be viewed or edited.
+#     """
+#
+#     queryset = User.objects.all().order_by("-date_joined")
+#     serializer_class = UserSerializer
+#     lookup_field = "username"
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows posts to be viewed or edited.
+    """
+
+    queryset = Post.objects.all().order_by("-published_date")
+    serializer_class = PostSerializer
+    lookup_field = "title"
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    # def get_queryset(self):
+    #     username = self.kwargs["author"]
+    #     user_posts = get_object_or_404(User, username=username)
+    #     return user_posts.objects.all().order_by("-published_date")
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows categories to be viewed or edited.
+    """
+
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
